@@ -30,5 +30,7 @@ matriz = [
 
 grafo = matriz_para_grafo_direcionado(matriz)
 print("Grafo direcionado:", grafo)
+for vertice in grafo:
+    print(f"Vértice {vertice} tem arestas para: {grafo[vertice]}")
 # saida:
 # Grafo direcionado: {0: [1, 3], 1: [2], 2: [0], 3: [2]}    
