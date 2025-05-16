@@ -1,28 +1,21 @@
-Análise de Grafos Direcionados
-Este projeto implementa um algoritmo que analisa grafos direcionados a partir de uma matriz de adjacência e realiza as seguintes tarefas:
+# Análise de Grafos Direcionados
 
-Funcionalidades
-Verifica e identifica:
+Este projeto implementa um algoritmo que analisa grafos **direcionados** a partir de uma **matriz de adjacência**, realizando as seguintes tarefas:
 
-Ciclos e caminhos Eurelianos
+## Funcionalidades
 
-Ciclos e caminhos Hamiltonianos
+- **Verifica e identifica**:
+  - **Ciclos e caminhos Eurelianos**
+  - **Ciclos e caminhos Hamiltonianos**
 
-Exibe:
+- **Exibe**:
+  - Todos os **ciclos e caminhos Eurelianos** encontrados
+  - Todos os **ciclos e caminhos Hamiltonianos** encontrados
 
-Todos os ciclos e caminhos Eurelianos encontrados
+- **Permite busca**:
+  - **Heurística** (ex: aproximações, algoritmos gulosos)
+  - **Exata** (ex: força bruta, backtracking)
 
-Todos os ciclos e caminhos Hamiltonianos encontrados
-
-Permite busca:
-
-Heurística (ex: aproximações, algoritmos gulosos)
-
-Exata (ex: força bruta, backtracking)
-
-Controle de execução:
-
-Limite de tempo máximo de execução
-
-Limite de número de vértices percorridos
-
+- **Controle de execução**:
+  - Limite de **tempo máximo de execução**
+  - Limite de **número de vértices percorridos**
