@@ -21,6 +21,16 @@ def matriz_para_grafo_direcionado(matriz):
                 grafo[i].append(j)
     
     return grafo
+
+def grafo_teste():
+    matriz = [
+        [0, 1, 0, 1],
+        [0, 0, 1, 0],
+        [1, 0, 0, 0],
+        [0, 0, 1, 0]
+    ]
+    return matriz_para_grafo_direcionado(matriz)
+
 matriz = [
     [0, 1, 0, 1],
     [0, 0, 1, 0],
