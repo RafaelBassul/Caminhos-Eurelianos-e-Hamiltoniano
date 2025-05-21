@@ -134,20 +134,28 @@ def grafo_teste():
 
 if __name__ == '__main__':
     matriz = [
-        [0, 1, 0, 1],
-        [0, 0, 1, 0],
-        [1, 0, 0, 0],
-        [0, 0, 1, 0]
+    [0, 1, 0, 0, 0, 1],
+    [0, 0, 1, 0, 1, 0],  
+    [1, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 1, 1],  
+    [1, 0, 1, 0, 0, 0],  
+    [0, 1, 0, 1, 0, 0],  
     ]
 
 
     grafo = matriz_para_grafo_direcionado(matriz)
+    tem_caminho, tem_ciclo = verifica_caminho_ciclo_euleriano(grafo)
+    print("--------------------------------")
+    print("Tem caminho euleriano?:", tem_caminho)
+    print("Tem ciclo euleriano?:", tem_ciclo)
+    print("--------------------------------")
     GrafoHamiltoniano(grafo)
-
+    print("--------------------------------")
     #printar o grafo
     print("Grafo direcionado:", grafo)
+    print("--------------------------------")
     for vertice, adjacentes in grafo.items():
         print(f"Vértice {vertice} tem arestas para: {adjacentes}")
-
+    print("--------------------------------")
 
 
