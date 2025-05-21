@@ -120,7 +120,7 @@ def PercorrerGrafo(grafo, vertice, inicio, caminho, caminhos):
             PercorrerGrafo(grafo, vizinho, inicio, caminho, caminhos)
     grafo[vertice][1] = False  
 
-def GrafoHamiltonianoHeuristico(grafo):
+def GrafoHamiltonianoHeuristico(grafo, segs):
     # foi usado o teorema de dirac para a proccura heuristica
     n = len(grafo)
     res = ""
@@ -137,7 +137,13 @@ def GrafoHamiltonianoHeuristico(grafo):
             grau_entrada[adjacente] += 1
 
     dirac_satisfeito = True
+    comeco = time.time()
     for v in grafo:
+        horario_teste = time.time()
+        if horario_teste - comeco > segs:
+            res = f"Tempo limite de {segs} segundos excedido. A execução foi interrompida."
+            return res
+        
         grau_total = grau_saida[v] + grau_entrada[v]
         #print(f"Vértice {v}: grau entrada = {grau_entrada[v]}, grau saída = {grau_saida[v]}, grau total = {grau_total}, necessário >= {n / 2}")
         
