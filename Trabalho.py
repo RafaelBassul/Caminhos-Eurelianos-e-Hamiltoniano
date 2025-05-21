@@ -194,6 +194,6 @@ if __name__ == '__main__':
     for vertice, adjacentes in grafo.items():
         print(f"Vértice {vertice} tem arestas para: {adjacentes}")
     print("--------------------------------")
-    print("Resultado:", GrafoHamiltonianoHeuristico(grafo))
+    print("Resultado:", GrafoHamiltonianoHeuristico(grafo, 5))
 
 
