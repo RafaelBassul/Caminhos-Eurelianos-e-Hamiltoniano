@@ -17,7 +17,7 @@ def matriz_para_grafo_direcionado(matriz):
     # Para cada aresta na matriz, adiciona a conexão direcionada
     for i in range(num_vertices):
         for j in range(num_vertices):
-            if matriz[i][j] == 1:
+            for k in range(matriz[i][j]):
                 grafo[i].append(j)
     
     return grafo
