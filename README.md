@@ -1,5 +1,5 @@
-Artigo: https://docs.google.com/document/d/1JD4M_oGYuRQpzgeEzXgrvw71fhqFTAzkhJEPoxdLzHw/edit?tab=t.0
-
+## Artigo: https://docs.google.com/document/d/1JD4M_oGYuRQpzgeEzXgrvw71fhqFTAzkhJEPoxdLzHw/edit?tab=t.0
+## Slides: https://docs.google.com/presentation/d/12apuW_HVrkG1L-vK84JzOH9fZKynjf0Q71oUPj2g1mQ/edit?usp=sharing
 # Análise de Grafos Direcionados
 
 Este projeto implementa um algoritmo que analisa grafos **direcionados** a partir de uma **matriz de adjacência**, realizando as seguintes tarefas:
