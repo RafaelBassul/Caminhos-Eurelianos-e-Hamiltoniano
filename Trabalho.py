@@ -120,7 +120,38 @@ def PercorrerGrafo(grafo, vertice, inicio, caminho, caminhos):
             PercorrerGrafo(grafo, vizinho, inicio, caminho, caminhos)
     grafo[vertice][1] = False  
 
-# def GrafoSemiHamiltoniano(grafo):
+def GrafoHamiltonianoHeuristico(grafo):
+    # foi usado o teorema de dirac para a proccura heuristica
+    n = len(grafo)
+    res = ""
+    if n < 3:
+        res = "O teorema de Dirac não se aplica a grafos com menos de 3 vértices."
+        return res 
+    
+    grau_saida = {v: len(adjacentes) for v, adjacentes in grafo.items()}
+    grau_entrada = {v: 0 for v in grafo}
+
+    # calcula o grau de entrada
+    for v in grafo:
+        for adjacente in grafo[v]:
+            grau_entrada[adjacente] += 1
+
+    dirac_satisfeito = True
+    for v in grafo:
+        grau_total = grau_saida[v] + grau_entrada[v]
+        #print(f"Vértice {v}: grau entrada = {grau_entrada[v]}, grau saída = {grau_saida[v]}, grau total = {grau_total}, necessário >= {n / 2}")
+        
+        if grau_total < (n / 2):
+            dirac_satisfeito = False
+            break
+
+    if dirac_satisfeito:
+        res = "O grafo satisfaz o teorema de Dirac: É considerado um grafo Hamiltoniano."
+        return res
+    else:
+        res = "O grafo não satisfaz o teorema de Dirac: Pode não ser um grafo Hamiltoniano."
+        return res
+
 
 
 def grafo_teste():
@@ -157,5 +188,6 @@ if __name__ == '__main__':
     for vertice, adjacentes in grafo.items():
         print(f"Vértice {vertice} tem arestas para: {adjacentes}")
     print("--------------------------------")
+    print("Resultado:", GrafoHamiltonianoHeuristico(grafo))
 
 
