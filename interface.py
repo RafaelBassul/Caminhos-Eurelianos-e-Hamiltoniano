@@ -1,7 +1,9 @@
 import tkinter as tk
 from tkinter import Canvas
-from Trabalho import grafo_teste
+from Trabalho import grafo_teste, verifica_caminho_ciclo_euleriano, GrafoHamiltoniano, GrafoHamiltonianoHeuristico
 import math
+import sys
+
 
 class InterfaceGrafo(tk.Tk):
     def __init__(self, grafo=None):
@@ -14,38 +16,152 @@ class InterfaceGrafo(tk.Tk):
             self.label = tk.Label(self, text=grafoVazio, font=('Arial', 12, 'italic'), bg="lightgray", width=100)
             self.label.pack(pady=5)
             return
-        
+
         self.grafo = grafo
 
-        # Frame para os botões no topo
+        # Frame para os botões no topo (como abas)
         self.button_frame = tk.Frame(self)
         self.button_frame.pack(pady=10)
 
-        self.button_tipo = tk.Button(self.button_frame, text="Ativar fun1", command=self.funcao1)
-        self.button_tipo.pack(side=tk.LEFT, padx=5)
+        self.button_euler = tk.Button(self.button_frame, text="Euleriano", command=self.mostrar_euleriano)
+        self.button_euler.pack(side=tk.LEFT, padx=5)
 
-        self.button_altura = tk.Button(self.button_frame, text="Ativar fun2", command=self.funcao2)
-        self.button_altura.pack(side=tk.LEFT, padx=5)
+        self.button_hamil_exato = tk.Button(self.button_frame, text="Hamiltoniano Exato", command=self.mostrar_hamiltoniano_exato)
+        self.button_hamil_exato.pack(side=tk.LEFT, padx=5)
+
+        self.button_hamil_heur = tk.Button(self.button_frame, text="Hamiltoniano Heurístico", command=self.mostrar_hamiltoniano_heuristico)
+        self.button_hamil_heur.pack(side=tk.LEFT, padx=5)
+
+        # Frame dinâmico para conteúdo variável
+        self.dynamic_frame = tk.Frame(self)
+        self.dynamic_frame.pack(pady=5)
 
         # Canvas para visualizar o grafo
         self.canvas = Canvas(self, width=800, height=600, bg="white")
         self.canvas.pack()
 
-        # Label inferior
-        self.label = tk.Label(self, text=" ", font=('Arial', 12, 'italic'), bg="lightgray", width=100)
-        self.label.pack(pady=5)
-
         # Desenhar o grafo
         self.positions = {}
         self.draw_grafo()
 
-    def funcao1(self):
-        texto = f"Testando função 1."
-        self.label.config(text=texto)
+    def limpar_frame_dinamico(self):
+        for widget in self.dynamic_frame.winfo_children():
+            widget.destroy()
 
-    def funcao2(self):
-        string_tipos = "Testando função 2."
-        self.label.config(text=string_tipos)
+    def mostrar_euleriano(self):
+        self.limpar_frame_dinamico()
+
+        botao = tk.Button(self.dynamic_frame, text="Fazer analise euleriana", command=self.caminhos_euler)
+        botao.pack(pady=5)
+
+        self.label_euler = tk.Label(self.dynamic_frame, text="", font=('Arial', 10))
+        self.label_euler.pack()
+
+    def mostrar_hamiltoniano_exato(self):
+        self.limpar_frame_dinamico()
+
+        frame_a = tk.Frame(self.dynamic_frame)
+        frame_a.pack(pady=2)
+
+        self.var_a = tk.BooleanVar()
+        chk_a = tk.Checkbutton(frame_a, text="Limite de tempo (s)", variable=self.var_a, command=self.toggle_entry_a)
+        chk_a.pack(side=tk.LEFT)
+
+        self.entry_a = tk.Entry(frame_a, state=tk.DISABLED)
+        self.entry_a.pack(side=tk.LEFT, padx=5)
+
+        frame_b = tk.Frame(self.dynamic_frame)
+        frame_b.pack(pady=2)
+
+        self.var_b = tk.BooleanVar()
+        chk_b = tk.Checkbutton(frame_b, text="Limite de nº vertices", variable=self.var_b, command=self.toggle_entry_b)
+        chk_b.pack(side=tk.LEFT)
+
+        self.entry_b = tk.Entry(frame_b, state=tk.DISABLED)
+        self.entry_b.pack(side=tk.LEFT, padx=5)
+
+        botao = tk.Button(self.dynamic_frame, text="Fazer analise hamiltoniana exata", command=self.caminhos_hamil_exato)
+        botao.pack(pady=5)
+
+        self.label_hamil_ex = tk.Label(self.dynamic_frame, text="", font=('Arial', 10))
+        self.label_hamil_ex.pack()
+
+    def mostrar_hamiltoniano_heuristico(self):
+        self.limpar_frame_dinamico()
+
+        frame_a = tk.Frame(self.dynamic_frame)
+        frame_a.pack(pady=2)
+
+        self.var_ha = tk.BooleanVar()
+        chk_ha = tk.Checkbutton(frame_a, text="Limite de tempo (s)", variable=self.var_ha, command=self.toggle_entry_ha)
+        chk_ha.pack(side=tk.LEFT)
+
+        self.entry_ha = tk.Entry(frame_a, state=tk.DISABLED)
+        self.entry_ha.pack(side=tk.LEFT, padx=5)
+
+        frame_b = tk.Frame(self.dynamic_frame)
+        frame_b.pack(pady=2)
+
+        self.var_hb = tk.BooleanVar()
+        chk_hb = tk.Checkbutton(frame_b, text="Limite de nº vertices", variable=self.var_hb, command=self.toggle_entry_hb)
+        chk_hb.pack(side=tk.LEFT)
+
+        self.entry_hb = tk.Entry(frame_b, state=tk.DISABLED)
+        self.entry_hb.pack(side=tk.LEFT, padx=5)
+
+        botao = tk.Button(self.dynamic_frame, text="Fazer analise hamiltoniana heuristica", command=self.caminhos_hamil_heuristico)
+        botao.pack(pady=5)
+
+        self.label_hamil_heur = tk.Label(self.dynamic_frame, text="", font=('Arial', 10))
+        self.label_hamil_heur.pack()
+
+    def toggle_entry_a(self):
+        self.entry_a.config(state=tk.NORMAL if self.var_a.get() else tk.DISABLED)
+
+    def toggle_entry_b(self):
+        self.entry_b.config(state=tk.NORMAL if self.var_b.get() else tk.DISABLED)
+
+    def toggle_entry_ha(self):
+        self.entry_ha.config(state=tk.NORMAL if self.var_ha.get() else tk.DISABLED)
+
+    def toggle_entry_hb(self):
+        self.entry_hb.config(state=tk.NORMAL if self.var_hb.get() else tk.DISABLED)
+
+    def caminhos_euler(self):
+        tem_caminho, tem_ciclo = verifica_caminho_ciclo_euleriano(grafo=self.grafo)
+        texto = ''
+        if tem_caminho == 'Sim':
+            texto += 'Existe pelo menos um caminho euleriano no grafo.\n'
+        else:
+            texto += 'Não existem caminhos eulerianos no grafo.\n'
+        if tem_ciclo == 'Sim':
+            texto += 'Existe pelo menos um ciclo euleriano no grafo.\n'
+        else:
+            texto += 'Não existem ciclos eulerianos no grafo.'
+        self.label_euler.config(text=texto)
+
+    def caminhos_hamil_exato(self):
+        texto = "Testando função Hamiltoniano."
+        if self.var_a.get():
+            texto += f" | Tempo: {self.entry_a.get()}"
+        if self.var_b.get():
+            texto += f" | Vértices: {self.entry_b.get()}"
+        self.label_hamil_ex.config(text=texto)
+
+    def caminhos_hamil_heuristico(self):
+        lim_tempo = sys.maxsize
+        lim_vert = sys.maxsize
+
+        if self.var_ha.get():
+            lim_tempo = self.entry_ha.get()
+        if self.var_hb.get():
+            lim_vert = self.entry_hb.get()
+        
+        texto = GrafoHamiltonianoHeuristico(grafo=self.grafo,
+                                            segs=lim_tempo,
+                                            limiteV=lim_vert)
+
+        self.label_hamil_heur.config(text=texto)
 
     def draw_grafo(self):
         num_nodes = len(self.grafo)
@@ -54,53 +170,33 @@ class InterfaceGrafo(tk.Tk):
         radius = 200
         angle_step = 2 * math.pi / num_nodes
 
-        # Primeiro, posicionar os nós em círculo
         for i, node in enumerate(self.grafo):
             angle = i * angle_step
             x = center_x + radius * math.cos(angle)
             y = center_y + radius * math.sin(angle)
             self.positions[node] = (x, y)
 
-            # Desenhar o nó
             self.canvas.create_oval(x-20, y-20, x+20, y+20, fill='lightblue', outline='black')
             self.canvas.create_text(x, y, text=str(node), font=('Arial', 10, 'bold'))
 
-        # Agora, desenhar as arestas
         for origem in self.grafo:
             for destino in self.grafo[origem]:
                 x1, y1 = self.positions[origem]
                 x2, y2 = self.positions[destino]
 
-                # Calcular deslocamento para a seta não sobrepor o nó
                 dx, dy = x2 - x1, y2 - y1
                 dist = math.sqrt(dx**2 + dy**2)
                 offset_x = 20 * dx / dist
                 offset_y = 20 * dy / dist
 
-                # Desenhar linha com seta
                 self.canvas.create_line(
                     x1 + offset_x, y1 + offset_y,
                     x2 - offset_x, y2 - offset_y,
                     arrow=tk.LAST
                 )
 
-    def reset_graph(self):
-        self.canvas.delete("all")
-        self.draw_grafo(self.grafo, 400, 50, 150, 50)
-
 
 def main():
-    # Árvore de teste (alterar árvore aqui)
-    #root = teste1()
-    #root = teste2()
-    #root = teste3()
-    #root = teste4()
-    #root = teste5()
-    #root = teste6()
-    #root = teste7()
-    #root = teste8()
-
-    # Carregar / Abrir interface gráfica
     try:
         grafo = grafo_teste()
         app = InterfaceGrafo(grafo)
