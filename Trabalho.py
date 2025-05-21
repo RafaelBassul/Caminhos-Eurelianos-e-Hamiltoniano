@@ -188,6 +188,19 @@ if __name__ == '__main__':
 
 
     grafo = matriz_para_grafo_direcionado(matriz)
+    tem_caminho, tem_ciclo = verifica_caminho_ciclo_euleriano(grafo)
+    print("--------------------------------")
+    print("Tem caminho euleriano?:", tem_caminho)
+    print("Tem ciclo euleriano?:", tem_ciclo)
+    print("--------------------------------")
+    GrafoHamiltoniano(grafo)
+    print("--------------------------------")
+    #printar o grafo
+    print("Grafo direcionado:", grafo)
+    print("--------------------------------")
+    for vertice, adjacentes in grafo.items():
+        print(f"Vértice {vertice} tem arestas para: {adjacentes}")
+    print("--------------------------------")
     print("Resultado:", GrafoHamiltonianoHeuristico(grafo, 5, 7))
 
 
