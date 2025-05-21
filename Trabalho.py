@@ -120,7 +120,7 @@ def PercorrerGrafo(grafo, vertice, inicio, caminho, caminhos):
             PercorrerGrafo(grafo, vizinho, inicio, caminho, caminhos)
     grafo[vertice][1] = False  
 
-def GrafoHamiltonianoHeuristico(grafo, segs):
+def GrafoHamiltonianoHeuristico(grafo, segs, limiteV):
     # foi usado o teorema de dirac para a proccura heuristica
     n = len(grafo)
     res = ""
@@ -138,18 +138,25 @@ def GrafoHamiltonianoHeuristico(grafo, segs):
 
     dirac_satisfeito = True
     comeco = time.time()
+    vertices_percorridos = 0
     for v in grafo:
         horario_teste = time.time()
         if horario_teste - comeco > segs:
             res = f"Tempo limite de {segs} segundos excedido. A execução foi interrompida."
             return res
-        
+
+        if vertices_percorridos >= limiteV:
+            res = f"Limite de {limiteV} vertices percorridos. A execução foi interrompida."
+            return res
+
         grau_total = grau_saida[v] + grau_entrada[v]
         #print(f"Vértice {v}: grau entrada = {grau_entrada[v]}, grau saída = {grau_saida[v]}, grau total = {grau_total}, necessário >= {n / 2}")
         
         if grau_total < (n / 2):
             dirac_satisfeito = False
             break
+
+        vertices_percorridos += 1
 
     if dirac_satisfeito:
         res = "O grafo satisfaz o teorema de Dirac: É considerado um grafo Hamiltoniano."
@@ -181,19 +188,6 @@ if __name__ == '__main__':
 
 
     grafo = matriz_para_grafo_direcionado(matriz)
-    tem_caminho, tem_ciclo = verifica_caminho_ciclo_euleriano(grafo)
-    print("--------------------------------")
-    print("Tem caminho euleriano?:", tem_caminho)
-    print("Tem ciclo euleriano?:", tem_ciclo)
-    print("--------------------------------")
-    GrafoHamiltoniano(grafo)
-    print("--------------------------------")
-    #printar o grafo
-    print("Grafo direcionado:", grafo)
-    print("--------------------------------")
-    for vertice, adjacentes in grafo.items():
-        print(f"Vértice {vertice} tem arestas para: {adjacentes}")
-    print("--------------------------------")
-    print("Resultado:", GrafoHamiltonianoHeuristico(grafo, 5))
+    print("Resultado:", GrafoHamiltonianoHeuristico(grafo, 5, 7))
 
 
