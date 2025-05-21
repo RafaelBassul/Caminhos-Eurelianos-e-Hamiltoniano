@@ -71,25 +71,25 @@ def verifica_caminho_ciclo_euleriano(grafo):
     return tem_caminho, tem_ciclo
 
 quantidadeArestasPercorridas = 2
-def GrafoHamiltoniano(grafo, tempoMaximo=0, arestasMaximas=0):
+def GrafoHamiltoniano(grafo, tempoMaximo=0, VerticeMaxima=0):
     caminhos = []
     tempo_ATUAL = time.time()
     global quantidadeArestasPercorridas
     for i in grafo:
-        if (tempoMaximo != 0 and (time.time() - tempo_ATUAL) > tempoMaximo) or (arestasMaximas != 0 and quantidadeArestasPercorridas > arestasMaximas):
+        if (tempoMaximo != 0 and (time.time() - tempo_ATUAL) > tempoMaximo) or (VerticeMaxima != 0 and quantidadeArestasPercorridas >= VerticeMaxima):
             break
         for j in grafo[i]:
-            if (tempoMaximo != 0 and (time.time() - tempo_ATUAL) > tempoMaximo) or (arestasMaximas != 0 and quantidadeArestasPercorridas > arestasMaximas):
+            if (tempoMaximo != 0 and (time.time() - tempo_ATUAL) > tempoMaximo) or (VerticeMaxima != 0 and quantidadeArestasPercorridas >= VerticeMaxima):
                 break
             grafocopia = {}
             for x in grafo:
                 grafocopia[x] = [grafo[x], False]
             grafocopia[i][1] = True
-            PercorrerGrafo(grafocopia,j, i, str(i) + " -> ",caminhos, arestasMaximas)
+            PercorrerGrafo(grafocopia,j, i, str(i) + " -> ",caminhos, VerticeMaxima)
         
     if (tempoMaximo != 0 and (time.time() - tempo_ATUAL) > tempoMaximo) :
         print('Quantidade de arestas pecoridas pelo tempo acabou')
-    if (arestasMaximas != 0 and quantidadeArestasPercorridas > arestasMaximas):
+    if (VerticeMaxima != 0 and quantidadeArestasPercorridas >= VerticeMaxima):
         print('Quantidade de arestas pecoridas igualou a quantidade de arestas maximas')
         
 
@@ -124,24 +124,21 @@ def GrafoHamiltoniano(grafo, tempoMaximo=0, arestasMaximas=0):
         print("Grafo é Não é Hamiltoniano")
     quantidadeArestasPercorridas = 2
 
-def PercorrerGrafo(grafo, vertice, inicio, caminho, caminhos, arestasMaximas):
+def PercorrerGrafo(grafo, vertice, inicio, caminho, caminhos, VerticeMaxima):
     caminho += str(vertice) + " -> "
     grafo[vertice][1] = True
-    global quantidadeArestasPercorridas
-    quantidadeArestasPercorridas += 1
+
     for vizinho in grafo[vertice][0]:
-        if arestasMaximas != 0 and quantidadeArestasPercorridas > arestasMaximas:
-                return
+        global quantidadeArestasPercorridas
+        if VerticeMaxima != 0 and quantidadeArestasPercorridas + 1 > VerticeMaxima:
+            continue  
         if vizinho == inicio and len(caminho.split("->")) > 3:
-            quantidadeArestasPercorridas += 1
-            if arestasMaximas != 0 and quantidadeArestasPercorridas > arestasMaximas:
-                return
+            quantidadeArestasPercorridas += 1  
             caminhos.append(caminho + str(inicio))
         elif not grafo[vizinho][1]:
-            if arestasMaximas != 0 and quantidadeArestasPercorridas > arestasMaximas:
-                return
-            PercorrerGrafo(grafo, vizinho, inicio, caminho, caminhos, arestasMaximas)
-    grafo[vertice][1] = False  
+            quantidadeArestasPercorridas += 1 
+            PercorrerGrafo(grafo, vizinho, inicio, caminho, caminhos, VerticeMaxima)
+    grafo[vertice][1] = False
 
 def GrafoHamiltonianoHeuristico(grafo, segs, limiteV):
     # foi usado o teorema de dirac para a proccura heuristica
