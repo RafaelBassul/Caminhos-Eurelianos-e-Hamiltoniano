@@ -1,3 +1,5 @@
+import time
+
 def matriz_para_grafo_direcionado(matriz):
     """
     Converte uma matriz de adjacência em um grafo direcionado representado como dicionário
@@ -79,6 +81,7 @@ def GrafoHamiltoniano(grafo):
             PercorrerGrafo(grafocopia,j, str(i) + " -> ",caminhos)
     CaminhoHamiltonianoDefinitivo = False
     HamiltinoCompletoDefinitivo = False
+    CaminhosHamiltonianos = []
     for i in caminhos:
         CaminhoHamiltoniano = True
         HamiltinoCompleto = False
@@ -100,7 +103,9 @@ def GrafoHamiltoniano(grafo):
             print("Grafo Hamiltoniano encontrado:", i)
         elif CaminhoHamiltoniano:
             CaminhoHamiltonianoDefinitivo = True
-            print("Caminho Hamiltoniano, Logo Grafo Semi-Hamiltoniano encontrado:", i)
+            CaminhosHamiltonianos.append(i)
+    if not CaminhoHamiltonianoDefinitivo and HamiltinoCompletoDefinitivo:
+        print("Grafo é Semi-Hamiltoniano Encontrado:", CaminhosHamiltonianos)
     if not CaminhoHamiltonianoDefinitivo and not HamiltinoCompletoDefinitivo:
         print("Grafo é Não é Hamiltoniano")
 
