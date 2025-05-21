@@ -73,12 +73,13 @@ def verifica_caminho_ciclo_euleriano(grafo):
 def GrafoHamiltoniano(grafo):
     caminhos = []
     for i in grafo:
-        for j in grafo[i]:
+        for j in grafo[i][0]:
             grafocopia = {}
             for x in grafo:
                 grafocopia[x] = [grafo[x], False]
             grafocopia[i][1] = True
-            PercorrerGrafo(grafocopia,j, str(i) + " -> ",caminhos)
+            PercorrerGrafo(grafocopia,j, i, str(i) + " -> ",caminhos)
+
     CaminhoHamiltonianoDefinitivo = False
     HamiltinoCompletoDefinitivo = False
     CaminhosHamiltonianos = []
@@ -104,26 +105,20 @@ def GrafoHamiltoniano(grafo):
         elif CaminhoHamiltoniano:
             CaminhoHamiltonianoDefinitivo = True
             CaminhosHamiltonianos.append(i)
-    if not CaminhoHamiltonianoDefinitivo and HamiltinoCompletoDefinitivo:
+    if CaminhoHamiltonianoDefinitivo and not HamiltinoCompletoDefinitivo:
         print("Grafo é Semi-Hamiltoniano Encontrado:", CaminhosHamiltonianos)
     if not CaminhoHamiltonianoDefinitivo and not HamiltinoCompletoDefinitivo:
         print("Grafo é Não é Hamiltoniano")
 
-def PercorrerGrafo(grafo,vertice,caminho, caminhos):
+def PercorrerGrafo(grafo, vertice, inicio, caminho, caminhos):
     caminho += str(vertice) + " -> "
     grafo[vertice][1] = True
-    if len(grafo[vertice][0]) != 0:
-        for i in grafo[vertice][0]:
-            if not grafo[i][1]:
-                resultado = PercorrerGrafo(grafo,i,caminho,caminhos)
-                if resultado != None and resultado not in caminhos:
-                    caminhos.append(resultado)
-                grafo[i][1] = False
-            else:
-                caminho += str(i)
-                return caminho
-    else:
-        caminhos.append(caminho)
+    for vizinho in grafo[vertice][0]:
+        if vizinho == inicio and len(caminho.split("->")) > 3:
+            caminhos.append(caminho + str(inicio))
+        elif not grafo[vizinho][1]:
+            PercorrerGrafo(grafo, vizinho, inicio, caminho, caminhos)
+    grafo[vertice][1] = False  
 
 # def GrafoSemiHamiltoniano(grafo):
 
