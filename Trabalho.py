@@ -68,6 +68,60 @@ def verifica_caminho_ciclo_euleriano(grafo):
     
     return tem_caminho, tem_ciclo
 
+def GrafoHamiltoniano(grafo):
+    caminhos = []
+    for i in grafo:
+        for j in grafo[i]:
+            grafocopia = {}
+            for x in grafo:
+                grafocopia[x] = [grafo[x], False]
+            grafocopia[i][1] = True
+            PercorrerGrafo(grafocopia,j, str(i) + " -> ",caminhos)
+    CaminhoHamiltonianoDefinitivo = False
+    HamiltinoCompletoDefinitivo = False
+    for i in caminhos:
+        CaminhoHamiltoniano = True
+        HamiltinoCompleto = False
+        for x in grafo:
+            grafocopia[x] = [grafo[x], False]
+        vertices = i.split(" -> ")
+        if '' in vertices:
+            vertices.remove("")
+        if vertices[0] == vertices[-1]:
+            HamiltinoCompleto = True
+            HamiltinoCompletoDefinitivo = True
+        for vertice in vertices:
+            grafocopia[int(vertice)][1] = True
+        for f in grafocopia:
+            if grafocopia[f][1] == False:
+                CaminhoHamiltoniano = False
+                break
+        if HamiltinoCompleto and CaminhoHamiltoniano:
+            print("Grafo Hamiltoniano encontrado:", i)
+        elif CaminhoHamiltoniano:
+            CaminhoHamiltonianoDefinitivo = True
+            print("Caminho Hamiltoniano, Logo Grafo Semi-Hamiltoniano encontrado:", i)
+    if not CaminhoHamiltonianoDefinitivo and not HamiltinoCompletoDefinitivo:
+        print("Grafo é Não é Hamiltoniano")
+
+def PercorrerGrafo(grafo,vertice,caminho, caminhos):
+    caminho += str(vertice) + " -> "
+    grafo[vertice][1] = True
+    if len(grafo[vertice][0]) != 0:
+        for i in grafo[vertice][0]:
+            if not grafo[i][1]:
+                resultado = PercorrerGrafo(grafo,i,caminho,caminhos)
+                if resultado != None and resultado not in caminhos:
+                    caminhos.append(resultado)
+                grafo[i][1] = False
+            else:
+                caminho += str(i)
+                return caminho
+    else:
+        caminhos.append(caminho)
+
+# def GrafoSemiHamiltoniano(grafo):
+
 
 def grafo_teste():
     matriz = [
@@ -78,24 +132,22 @@ def grafo_teste():
     ]
     return matriz_para_grafo_direcionado(matriz)
 
-matriz = [
-    [0, 1, 0, 1],
-    [0, 0, 1, 0],
-    [1, 0, 0, 0],
-    [0, 0, 1, 0]
-]
+if __name__ == '__main__':
+    matriz = [
+        [0, 1, 0, 1],
+        [0, 0, 1, 0],
+        [1, 0, 0, 0],
+        [0, 0, 1, 0]
+    ]
 
 
-grafo = matriz_para_grafo_direcionado(matriz)
+    grafo = matriz_para_grafo_direcionado(matriz)
+    GrafoHamiltoniano(grafo)
 
-#printar o grafo
-print("Grafo direcionado:", grafo)
-for vertice, adjacentes in grafo.items():
-    print(f"Vértice {vertice} tem arestas para: {adjacentes}")
+    #printar o grafo
+    print("Grafo direcionado:", grafo)
+    for vertice, adjacentes in grafo.items():
+        print(f"Vértice {vertice} tem arestas para: {adjacentes}")
 
-#funçao se o grafo tem caminho euleriano
-tem_caminho, tem_ciclo = verifica_caminho_ciclo_euleriano(grafo)
-print(f"O grafo tem caminho euleriano? {tem_caminho}")
-print(f"O grafo tem ciclo euleriano? {tem_ciclo}")
 
 
