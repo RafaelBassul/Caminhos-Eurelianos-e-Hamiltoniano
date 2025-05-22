@@ -171,18 +171,18 @@ def GrafoHamiltonianoHeuristico(grafo, segs, limiteV):
             res = f"Tempo limite de {segs} segundos excedido. A execução foi interrompida."
             return res
 
-        if vertices_percorridos >= limiteV:
+        
+        vertices_percorridos += 1
+
+        if vertices_percorridos > limiteV:
             res = f"Limite de {limiteV} vertices percorridos. A execução foi interrompida."
             return res
 
         grau_total = grau_saida[v] + grau_entrada[v]
-        #print(f"Vértice {v}: grau entrada = {grau_entrada[v]}, grau saída = {grau_saida[v]}, grau total = {grau_total}, necessário >= {n / 2}")
         
         if grau_total < (n / 2):
             dirac_satisfeito = False
             break
-
-        vertices_percorridos += 1
 
     if dirac_satisfeito:
         res = "O grafo satisfaz o teorema de Dirac: É considerado um grafo Hamiltoniano ou semi-hamiltoniano."
