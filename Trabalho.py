@@ -130,12 +130,7 @@ def GrafoHamiltoniano(grafo, tempoMaximo=0, VerticeMaxima=0):
         print("Grafo é Não é Hamiltoniano" + '\n')
         saida += "Grafo é Não é Hamiltoniano" + '\n'
     quantidadeArestasPercorridas = 2
-    CaminhoHamiltonianoDefinitivo = False
-    HamiltinoCompletoDefinitivo = False
-    CaminhosHamiltonianos = []
-    CiclosHamiltonianos = []
-    caminhos = []
-
+    
     return saida + saida_2
 
 def PercorrerGrafo(grafo, vertice, inicio, caminho, caminhos, VerticeMaxima):
