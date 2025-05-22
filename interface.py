@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import Canvas
-from Trabalho import grafo_teste, verifica_caminho_ciclo_euleriano, GrafoHamiltoniano, GrafoHamiltonianoHeuristico
+from Trabalho import verifica_caminho_ciclo_euleriano, GrafoHamiltoniano, GrafoHamiltonianoHeuristico
+from testes import grafo_teste
 import math
 import sys
 
@@ -128,7 +129,14 @@ class InterfaceGrafo(tk.Tk):
         self.entry_hb.config(state=tk.NORMAL if self.var_hb.get() else tk.DISABLED)
 
     def caminhos_euler(self):
-        tem_caminho, tem_ciclo = verifica_caminho_ciclo_euleriano(grafo=self.grafo)
+
+        try:
+            self.label_euler.config(text='Executando analise...')
+            tem_caminho, tem_ciclo = verifica_caminho_ciclo_euleriano(grafo=self.grafo)
+        except Exception as e: 
+            print(f"Analise cancelada - motivo: {e}")
+
+            
         texto = ''
         if tem_caminho == 'Sim':
             texto += 'Existe pelo menos um caminho euleriano no grafo.\n'
@@ -141,11 +149,22 @@ class InterfaceGrafo(tk.Tk):
         self.label_euler.config(text=texto)
 
     def caminhos_hamil_exato(self):
-        texto = "Testando função Hamiltoniano."
+        lim_tempo = sys.maxsize
+        lim_vert = sys.maxsize
+        
         if self.var_a.get():
-            texto += f" | Tempo: {self.entry_a.get()}"
+            lim_tempo = float(self.entry_a.get())
         if self.var_b.get():
-            texto += f" | Vértices: {self.entry_b.get()}"
+            lim_vert = float(self.entry_b.get())
+
+        try:
+            self.label_hamil_ex.config(text='Executando analise...')
+            texto = GrafoHamiltoniano(grafo=self.grafo,
+                                      tempoMaximo=lim_tempo,
+                                      VerticeMaxima=lim_vert)
+        except Exception as e:
+            print(f"Analise cancelada - motivo: {e}")
+        
         self.label_hamil_ex.config(text=texto)
 
     def caminhos_hamil_heuristico(self):
@@ -153,14 +172,18 @@ class InterfaceGrafo(tk.Tk):
         lim_vert = sys.maxsize
 
         if self.var_ha.get():
-            lim_tempo = self.entry_ha.get()
+            lim_tempo = float(self.entry_ha.get())
         if self.var_hb.get():
-            lim_vert = self.entry_hb.get()
+            lim_vert = float(self.entry_hb.get())
         
-        texto = GrafoHamiltonianoHeuristico(grafo=self.grafo,
-                                            segs=lim_tempo,
-                                            limiteV=lim_vert)
-
+        try:
+            self.label_hamil_heur.config(text='Executando analise...')
+            texto = GrafoHamiltonianoHeuristico(grafo=self.grafo,
+                                                segs=lim_tempo,
+                                                limiteV=lim_vert)
+        except Exception as e:
+            print(f"Analise cancelada - motivo: {e}")
+            
         self.label_hamil_heur.config(text=texto)
 
     def draw_grafo(self):

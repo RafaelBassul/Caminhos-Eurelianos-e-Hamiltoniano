@@ -86,13 +86,13 @@ def GrafoHamiltoniano(grafo, tempoMaximo=0, VerticeMaxima=0):
                 grafocopia[x] = [grafo[x], False]
             grafocopia[i][1] = True
             PercorrerGrafo(grafocopia,j, i, str(i) + " -> ",caminhos, VerticeMaxima)
-        
+    
     if (tempoMaximo != 0 and (time.time() - tempo_ATUAL) > tempoMaximo) :
-        print('Quantidade de arestas pecoridas pelo tempo acabou')
+        return 'Quantidade de arestas pecoridas pelo tempo acabou'
     if (VerticeMaxima != 0 and quantidadeArestasPercorridas >= VerticeMaxima):
-        print('Quantidade de arestas pecoridas igualou a quantidade de arestas maximas')
+        return 'Quantidade de arestas pecoridas igualou a quantidade de arestas maximas'
         
-
+    saida = ''
     CaminhoHamiltonianoDefinitivo = False
     HamiltinoCompletoDefinitivo = False
     CaminhosHamiltonianos = []
@@ -114,15 +114,17 @@ def GrafoHamiltoniano(grafo, tempoMaximo=0, VerticeMaxima=0):
                 CaminhoHamiltoniano = False
                 break
         if HamiltinoCompleto and CaminhoHamiltoniano:
-            print("Grafo Hamiltoniano encontrado:", i)
+            saida += "Grafo Hamiltoniano encontrado:" + i + '\n'
         elif CaminhoHamiltoniano:
             CaminhoHamiltonianoDefinitivo = True
             CaminhosHamiltonianos.append(i)
     if CaminhoHamiltonianoDefinitivo and not HamiltinoCompletoDefinitivo:
-        print("Grafo é Semi-Hamiltoniano Encontrado:", CaminhosHamiltonianos)
-    if not CaminhoHamiltonianoDefinitivo:
-        print("Grafo é Não é Hamiltoniano")
+        saida += "Grafo é Semi-Hamiltoniano Encontrado:" + CaminhosHamiltonianos + '\n'
+    if CaminhoHamiltonianoDefinitivo:
+        saida += "Grafo é Não é Hamiltoniano" + '\n'
     quantidadeArestasPercorridas = 2
+
+    return saida
 
 def PercorrerGrafo(grafo, vertice, inicio, caminho, caminhos, VerticeMaxima):
     caminho += str(vertice) + " -> "
@@ -186,15 +188,6 @@ def GrafoHamiltonianoHeuristico(grafo, segs, limiteV):
         return res
 
 
-
-def grafo_teste():
-    matriz = [
-        [0, 1, 0, 1],
-        [0, 0, 1, 0],
-        [1, 0, 0, 0],
-        [0, 0, 1, 0]
-    ]
-    return matriz_para_grafo_direcionado(matriz)
 
 if __name__ == '__main__':
     matriz = [
