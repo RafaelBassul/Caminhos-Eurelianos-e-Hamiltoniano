@@ -20,7 +20,6 @@ class InterfaceGrafo(tk.Tk):
 
         self.grafo = grafo
 
-        # Frame para os botões no topo (como abas)
         self.button_frame = tk.Frame(self)
         self.button_frame.pack(pady=10)
 
@@ -33,19 +32,14 @@ class InterfaceGrafo(tk.Tk):
         self.button_hamil_heur = tk.Button(self.button_frame, text="Hamiltoniano Heurístico", command=self.mostrar_hamiltoniano_heuristico)
         self.button_hamil_heur.pack(side=tk.LEFT, padx=5)
 
-        # Frame dinâmico para conteúdo variável
         self.dynamic_frame = tk.Frame(self)
         self.dynamic_frame.pack(pady=5)
 
-        # Canvas para visualizar o grafo
         self.canvas = Canvas(self, width=800, height=600, bg="white")
         self.canvas.pack()
 
-        # Desenhar o grafo
         self.positions = {}
         self.draw_grafo()
-
-        # Aba default: euleriano
         self.mostrar_euleriano()
 
     def limpar_frame_dinamico(self):
@@ -95,8 +89,12 @@ class InterfaceGrafo(tk.Tk):
         self.button_hamil_exato.config(bg='lightblue')
         self.button_hamil_heur.config(bg='#F0F0F0')
 
-        self.label_hamil_ex = tk.Label(self.dynamic_frame, text="", font=('Arial', 10))
+        scroll_ex = tk.Scrollbar(self.dynamic_frame)
+        scroll_ex.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.label_hamil_ex = tk.Text(self.dynamic_frame, height=10, width=100, wrap=tk.WORD, yscrollcommand=scroll_ex.set, font=('Arial', 10))
         self.label_hamil_ex.pack()
+        scroll_ex.config(command=self.label_hamil_ex.yview)
 
     def mostrar_hamiltoniano_heuristico(self):
         self.limpar_frame_dinamico()
@@ -144,13 +142,11 @@ class InterfaceGrafo(tk.Tk):
         self.entry_hb.config(state=tk.NORMAL if self.var_hb.get() else tk.DISABLED)
 
     def caminhos_euler(self):
-
         try:
             self.label_euler.config(text='Executando analise...')
             tem_caminho, tem_ciclo = verifica_caminho_ciclo_euleriano(grafo=self.grafo)
         except Exception as e: 
             print(f"Analise cancelada - motivo: {e}")
-
             
         texto = ''
         if tem_caminho == 'Sim':
@@ -161,7 +157,6 @@ class InterfaceGrafo(tk.Tk):
             texto += 'Existe pelo menos um ciclo euleriano no grafo.\n'
         else:
             texto += 'Não existem ciclos eulerianos no grafo.\n'
-
 
         if tem_caminho == 'Sim':
             caminho = encontrar_caminho_euleriano(self.grafo)
@@ -179,14 +174,21 @@ class InterfaceGrafo(tk.Tk):
             lim_vert = int(self.entry_b.get())
 
         try:
-            self.label_hamil_ex.config(text='Executando analise...')
+            texto = 'Executando analise...'
+            self.label_hamil_ex.config(state=tk.NORMAL) 
+            self.label_hamil_ex.delete(1.0, tk.END)
+            self.label_hamil_ex.insert(tk.END, texto)
+            self.label_hamil_ex.config(state=tk.DISABLED)
             texto = GrafoHamiltoniano(grafo=self.grafo,
                                       tempoMaximo=lim_tempo,
                                       VerticeMaxima=lim_vert)
         except Exception as e:
             print(f"Analise cancelada - motivo: {e}")
         
-        self.label_hamil_ex.config(text=texto)
+        self.label_hamil_ex.config(state=tk.NORMAL) 
+        self.label_hamil_ex.delete(1.0, tk.END)
+        self.label_hamil_ex.insert(tk.END, texto)
+        self.label_hamil_ex.config(state=tk.DISABLED)
 
     def caminhos_hamil_heuristico(self):
         lim_tempo = sys.maxsize
@@ -233,14 +235,12 @@ class InterfaceGrafo(tk.Tk):
                 offset_x = 20 * dx / dist
                 offset_y = 20 * dy / dist
 
-                # Verifica se a aresta oposta existe
                 is_opposite = origem in self.grafo.get(destino, [])
 
                 if is_opposite and origem < destino:
-                    # Aplica deslocamento perpendicular se a aresta oposta existe
                     perp_dx = -dy / dist
                     perp_dy = dx / dist
-                    curva = 10  # Ajuste a intensidade da curva aqui
+                    curva = 10
                     x1 += perp_dx * curva
                     y1 += perp_dy * curva
                     x2 += perp_dx * curva
@@ -251,7 +251,6 @@ class InterfaceGrafo(tk.Tk):
                     x2 - offset_x, y2 - offset_y,
                     arrow=tk.LAST
                 )
-
 
 
 def main():

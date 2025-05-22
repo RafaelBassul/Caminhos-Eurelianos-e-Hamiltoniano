@@ -117,17 +117,14 @@ def GrafoHamiltoniano(grafo, tempoMaximo=0, VerticeMaxima=0):
                 CaminhoHamiltoniano = False
                 break
         if HamiltinoCompleto and CaminhoHamiltoniano:
-            print("Grafo Hamiltoniano encontrado:" + i + '\n')
             saida += "Grafo Hamiltoniano encontrado:" + i + '\n'
             CiclosHamiltonianos.append(i)
         elif CaminhoHamiltoniano:
             CaminhoHamiltonianoDefinitivo = True
             CaminhosHamiltonianos.append(i)
     if CaminhoHamiltonianoDefinitivo and len(CiclosHamiltonianos) > 0 and len(CaminhosHamiltonianos) == 0:
-        print("Grafo é Semi-Hamiltoniano Encontrado:" + CaminhosHamiltonianos + '\n')
         saida += "Grafo é Semi-Hamiltoniano Encontrado:" + CaminhosHamiltonianos + '\n'
     if len(CaminhosHamiltonianos) == 0 and len(CiclosHamiltonianos) == 0:
-        print("Grafo é Não é Hamiltoniano" + '\n')
         saida += "Grafo é Não é Hamiltoniano" + '\n'
     quantidadeArestasPercorridas = 2
     
