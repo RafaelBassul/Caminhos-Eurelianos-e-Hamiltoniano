@@ -73,6 +73,8 @@ def verifica_caminho_ciclo_euleriano(grafo):
 quantidadeArestasPercorridas = 2
 def GrafoHamiltoniano(grafo, tempoMaximo=0, VerticeMaxima=0):
     caminhos = []
+    saida = ''
+    saida_2 = ''
     tempo_ATUAL = time.time()
     global quantidadeArestasPercorridas
     for i in grafo:
@@ -88,14 +90,15 @@ def GrafoHamiltoniano(grafo, tempoMaximo=0, VerticeMaxima=0):
             PercorrerGrafo(grafocopia,j, i, str(i) + " -> ",caminhos, VerticeMaxima)
     
     if (tempoMaximo != 0 and (time.time() - tempo_ATUAL) > tempoMaximo) :
-        return 'Quantidade de arestas pecoridas pelo tempo acabou'
+        saida_2 += 'Quantidade de arestas pecoridas pelo tempo acabou\n'
     if (VerticeMaxima != 0 and quantidadeArestasPercorridas >= VerticeMaxima):
-        return 'Quantidade de arestas pecoridas igualou a quantidade de arestas maximas'
+        saida_2 += 'Quantidade de arestas pecoridas igualou a quantidade de arestas maximas\n'
         
-    saida = ''
     CaminhoHamiltonianoDefinitivo = False
     HamiltinoCompletoDefinitivo = False
     CaminhosHamiltonianos = []
+    CiclosHamiltonianos = []
+
     for i in caminhos:
         CaminhoHamiltoniano = True
         HamiltinoCompleto = False
@@ -114,17 +117,26 @@ def GrafoHamiltoniano(grafo, tempoMaximo=0, VerticeMaxima=0):
                 CaminhoHamiltoniano = False
                 break
         if HamiltinoCompleto and CaminhoHamiltoniano:
+            print("Grafo Hamiltoniano encontrado:" + i + '\n')
             saida += "Grafo Hamiltoniano encontrado:" + i + '\n'
+            CiclosHamiltonianos.append(i)
         elif CaminhoHamiltoniano:
             CaminhoHamiltonianoDefinitivo = True
             CaminhosHamiltonianos.append(i)
-    if CaminhoHamiltonianoDefinitivo and not HamiltinoCompletoDefinitivo:
+    if CaminhoHamiltonianoDefinitivo and len(CiclosHamiltonianos) > 0 and len(CaminhosHamiltonianos) == 0:
+        print("Grafo é Semi-Hamiltoniano Encontrado:" + CaminhosHamiltonianos + '\n')
         saida += "Grafo é Semi-Hamiltoniano Encontrado:" + CaminhosHamiltonianos + '\n'
-    if CaminhoHamiltonianoDefinitivo:
+    if len(CaminhosHamiltonianos) == 0 and len(CiclosHamiltonianos) == 0:
+        print("Grafo é Não é Hamiltoniano" + '\n')
         saida += "Grafo é Não é Hamiltoniano" + '\n'
     quantidadeArestasPercorridas = 2
+    CaminhoHamiltonianoDefinitivo = False
+    HamiltinoCompletoDefinitivo = False
+    CaminhosHamiltonianos = []
+    CiclosHamiltonianos = []
+    caminhos = []
 
-    return saida
+    return saida + saida_2
 
 def PercorrerGrafo(grafo, vertice, inicio, caminho, caminhos, VerticeMaxima):
     caminho += str(vertice) + " -> "
@@ -186,6 +198,42 @@ def GrafoHamiltonianoHeuristico(grafo, segs, limiteV):
     else:
         res = "O grafo não satisfaz o teorema de Dirac: Pode não ser um grafo Hamiltoniano."
         return res
+    
+def encontrar_caminho_euleriano(grafo):
+    grafo_copiar = {v: grafo[v][:] for v in grafo}
+    caminho = []
+    pilha = []
+
+    # Escole um vertice inicial
+    grau_entrada = {v: 0 for v in grafo}
+    for v in grafo:
+        for u in grafo[v]:
+            grau_entrada[u] += 1
+
+    inicio = None
+    for v in grafo:
+        if len(grafo[v]) > grau_entrada[v]:
+            inicio = v
+            break
+    if inicio is None:
+        for v in grafo:
+            if grafo[v]:
+                inicio = v
+                break
+    if inicio is None:
+        return []
+
+    pilha.append(inicio)
+
+    while pilha:
+        atual = pilha[-1]
+        if grafo_copiar[atual]:
+            proximo = grafo_copiar[atual].pop()
+            pilha.append(proximo)
+        else:
+            caminho.append(pilha.pop())
+
+    return caminho[::-1]
 
 
 

@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import Canvas
-from Trabalho import verifica_caminho_ciclo_euleriano, GrafoHamiltoniano, GrafoHamiltonianoHeuristico
+from Trabalho import verifica_caminho_ciclo_euleriano, GrafoHamiltoniano, GrafoHamiltonianoHeuristico, encontrar_caminho_euleriano
 from testes import grafo_teste
 import math
 import sys
@@ -45,6 +45,9 @@ class InterfaceGrafo(tk.Tk):
         self.positions = {}
         self.draw_grafo()
 
+        # Aba default: euleriano
+        self.mostrar_euleriano()
+
     def limpar_frame_dinamico(self):
         for widget in self.dynamic_frame.winfo_children():
             widget.destroy()
@@ -52,8 +55,12 @@ class InterfaceGrafo(tk.Tk):
     def mostrar_euleriano(self):
         self.limpar_frame_dinamico()
 
-        botao = tk.Button(self.dynamic_frame, text="Fazer analise euleriana", command=self.caminhos_euler)
+        botao = tk.Button(self.dynamic_frame, text="Fazer analise", command=self.caminhos_euler)
         botao.pack(pady=5)
+
+        self.button_euler.config(bg='lightblue')
+        self.button_hamil_exato.config(bg='#F0F0F0')
+        self.button_hamil_heur.config(bg='#F0F0F0')
 
         self.label_euler = tk.Label(self.dynamic_frame, text="", font=('Arial', 10))
         self.label_euler.pack()
@@ -81,8 +88,12 @@ class InterfaceGrafo(tk.Tk):
         self.entry_b = tk.Entry(frame_b, state=tk.DISABLED)
         self.entry_b.pack(side=tk.LEFT, padx=5)
 
-        botao = tk.Button(self.dynamic_frame, text="Fazer analise hamiltoniana exata", command=self.caminhos_hamil_exato)
+        botao = tk.Button(self.dynamic_frame, text="Fazer analise", command=self.caminhos_hamil_exato)
         botao.pack(pady=5)
+
+        self.button_euler.config(bg='#F0F0F0')
+        self.button_hamil_exato.config(bg='lightblue')
+        self.button_hamil_heur.config(bg='#F0F0F0')
 
         self.label_hamil_ex = tk.Label(self.dynamic_frame, text="", font=('Arial', 10))
         self.label_hamil_ex.pack()
@@ -110,8 +121,12 @@ class InterfaceGrafo(tk.Tk):
         self.entry_hb = tk.Entry(frame_b, state=tk.DISABLED)
         self.entry_hb.pack(side=tk.LEFT, padx=5)
 
-        botao = tk.Button(self.dynamic_frame, text="Fazer analise hamiltoniana heuristica", command=self.caminhos_hamil_heuristico)
+        botao = tk.Button(self.dynamic_frame, text="Fazer analise", command=self.caminhos_hamil_heuristico)
         botao.pack(pady=5)
+
+        self.button_euler.config(bg='#F0F0F0')
+        self.button_hamil_exato.config(bg='#F0F0F0')
+        self.button_hamil_heur.config(bg='lightblue')
 
         self.label_hamil_heur = tk.Label(self.dynamic_frame, text="", font=('Arial', 10))
         self.label_hamil_heur.pack()
@@ -145,17 +160,23 @@ class InterfaceGrafo(tk.Tk):
         if tem_ciclo == 'Sim':
             texto += 'Existe pelo menos um ciclo euleriano no grafo.\n'
         else:
-            texto += 'Não existem ciclos eulerianos no grafo.'
+            texto += 'Não existem ciclos eulerianos no grafo.\n'
+
+
+        if tem_caminho == 'Sim':
+            caminho = encontrar_caminho_euleriano(self.grafo)
+            texto += f'{caminho}\n'
+            
         self.label_euler.config(text=texto)
 
-    def caminhos_hamil_exato(self):
-        lim_tempo = sys.maxsize
-        lim_vert = sys.maxsize
+    def caminhos_hamil_exato(self):       
+        lim_tempo = 0
+        lim_vert = 0
         
         if self.var_a.get():
-            lim_tempo = float(self.entry_a.get())
+            lim_tempo = int(self.entry_a.get())
         if self.var_b.get():
-            lim_vert = float(self.entry_b.get())
+            lim_vert = int(self.entry_b.get())
 
         try:
             self.label_hamil_ex.config(text='Executando analise...')
@@ -212,11 +233,25 @@ class InterfaceGrafo(tk.Tk):
                 offset_x = 20 * dx / dist
                 offset_y = 20 * dy / dist
 
+                # Verifica se a aresta oposta existe
+                is_opposite = origem in self.grafo.get(destino, [])
+
+                if is_opposite and origem < destino:
+                    # Aplica deslocamento perpendicular se a aresta oposta existe
+                    perp_dx = -dy / dist
+                    perp_dy = dx / dist
+                    curva = 10  # Ajuste a intensidade da curva aqui
+                    x1 += perp_dx * curva
+                    y1 += perp_dy * curva
+                    x2 += perp_dx * curva
+                    y2 += perp_dy * curva
+
                 self.canvas.create_line(
                     x1 + offset_x, y1 + offset_y,
                     x2 - offset_x, y2 - offset_y,
                     arrow=tk.LAST
                 )
+
 
 
 def main():
