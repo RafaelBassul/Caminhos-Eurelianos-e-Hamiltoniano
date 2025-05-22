@@ -1,0 +1,25 @@
+lucas eu mudei essa função teoricamente na interface mudou nada, mas so avisando pq agr ss retorna certo os caminhos halmiltonianos quando tem:
+```python
+E na chamada dela é:
+            PercorrerGrafo(grafocopia, j, i, str(i) + " -> ", [i], caminhos, VerticeMaxima)
+def PercorrerGrafo(grafo, vertice, inicio, caminho, visitados, caminhos, arestasMaximas):
+    global quantidadeArestasPercorridas
+
+    caminho += str(vertice) + " -> "
+    visitados.append(vertice) 
+    quantidadeArestasPercorridas += 1
+    if arestasMaximas != 0 and quantidadeArestasPercorridas > arestasMaximas:
+        visitados.pop()  
+        return
+    if len(visitados) == len(grafo):
+        if inicio in grafo[vertice][0]:
+            caminhos.append(caminho + str(inicio))  
+        else:
+            caminhos.append(caminho[:-4]) 
+        visitados.pop() 
+        return
+    for vizinho in grafo[vertice][0]:
+        if vizinho not in visitados:  
+            PercorrerGrafo(grafo, vizinho, inicio, caminho, visitados, caminhos, arestasMaximas)
+    visitados.pop()  
+```
