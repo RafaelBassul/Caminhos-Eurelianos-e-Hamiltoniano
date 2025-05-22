@@ -185,7 +185,7 @@ def GrafoHamiltonianoHeuristico(grafo, segs, limiteV):
         vertices_percorridos += 1
 
     if dirac_satisfeito:
-        res = "O grafo satisfaz o teorema de Dirac: É considerado um grafo Hamiltoniano."
+        res = "O grafo satisfaz o teorema de Dirac: É considerado um grafo Hamiltoniano ou semi-hamiltoniano."
         return res
     else:
         res = "O grafo não satisfaz o teorema de Dirac: Pode não ser um grafo Hamiltoniano."
