@@ -87,7 +87,7 @@ def GrafoHamiltoniano(grafo, tempoMaximo=0, VerticeMaxima=0):
             for x in grafo:
                 grafocopia[x] = [grafo[x], False]
             grafocopia[i][1] = True
-            PercorrerGrafo(grafocopia,j, i, str(i) + " -> ",caminhos, VerticeMaxima)
+            PercorrerGrafo(grafocopia, j, i, str(i) + " -> ", [i], caminhos, VerticeMaxima)
     
     if (tempoMaximo != 0 and (time.time() - tempo_ATUAL) > tempoMaximo) :
         saida_2 += 'Quantidade de arestas pecoridas pelo tempo acabou\n'
@@ -130,21 +130,25 @@ def GrafoHamiltoniano(grafo, tempoMaximo=0, VerticeMaxima=0):
     
     return saida + saida_2
 
-def PercorrerGrafo(grafo, vertice, inicio, caminho, caminhos, VerticeMaxima):
+def PercorrerGrafo(grafo, vertice, inicio, caminho, visitados, caminhos, arestasMaximas):
+    global quantidadeArestasPercorridas
     caminho += str(vertice) + " -> "
-    grafo[vertice][1] = True
-
+    visitados.append(vertice) 
+    quantidadeArestasPercorridas += 1
+    if arestasMaximas != 0 and quantidadeArestasPercorridas > arestasMaximas:
+        visitados.pop()  
+        return
+    if len(visitados) == len(grafo):
+        if inicio in grafo[vertice][0]:
+            caminhos.append(caminho + str(inicio))  
+        else:
+            caminhos.append(caminho[:-4]) 
+        visitados.pop() 
+        return
     for vizinho in grafo[vertice][0]:
-        global quantidadeArestasPercorridas
-        if VerticeMaxima != 0 and quantidadeArestasPercorridas + 1 > VerticeMaxima:
-            continue  
-        if vizinho == inicio and len(caminho.split("->")) > 3:
-            quantidadeArestasPercorridas += 1  
-            caminhos.append(caminho + str(inicio))
-        elif not grafo[vizinho][1]:
-            quantidadeArestasPercorridas += 1 
-            PercorrerGrafo(grafo, vizinho, inicio, caminho, caminhos, VerticeMaxima)
-    grafo[vertice][1] = False
+        if vizinho not in visitados:  
+            PercorrerGrafo(grafo, vizinho, inicio, caminho, visitados, caminhos, arestasMaximas)
+    visitados.pop()
 
 def GrafoHamiltonianoHeuristico(grafo, segs, limiteV):
     # foi usado o teorema de dirac para a proccura heuristica
